@@ -43,7 +43,7 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #FF5EE2;
   padding: 2rem;
 }
 
@@ -59,7 +59,7 @@ export default {
 
 .title {
   font-size: 2.5rem;
-  color: #667eea;
+  color: black;
   margin: 0 0 1rem 0;
 }
 

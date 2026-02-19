@@ -9,18 +9,20 @@
       <div class="header-right">
         <div class="mood">{{ entry.mood }}</div>
         <div class="actions">
-          <button class="action-btn edit-btn" @click="$emit('edit-entry', entry)" title="Edit">
-            ✏️
-          </button>
-          <button class="action-btn delete-btn" @click="deleteEntry" title="Delete">
-            🗑️
-          </button>
+          <button class="action-btn edit-btn" @click="$emit('edit-entry', entry)" title="Edit">✏️</button>
+          <button class="action-btn delete-btn" @click="deleteEntry" title="Delete">🗑️</button>
         </div>
       </div>
     </div>
 
-    <div v-if="entry.photo" class="entry-photo">
-      <img :src="entry.photo" :alt="entry.title" class="photo-img">
+    <div v-if="entry.photos && entry.photos.length > 0" class="entry-photos">
+      <img 
+        v-for="(photo, idx) in entry.photos" 
+        :key="idx"
+        :src="photo" 
+        :alt="`Photo ${idx + 1}`" 
+        class="photo-img"
+      />
     </div>
 
     <div class="entry-content">
@@ -28,7 +30,12 @@
     </div>
 
     <div class="entry-footer">
-      <span class="read-time">{{ calculateReadTime(entry.content) }} min read</span>
+      <div class="last-updated" v-if="entry.lastUpdatedAt || entry.lastUpdatedBy">
+        <small>
+          Last updated: <strong>{{ entry.lastUpdatedAt ? formatDate(entry.lastUpdatedAt) : '—' }}</strong>
+          <span v-if="entry.lastUpdatedBy"> by {{ entry.lastUpdatedBy }}</span>
+        </small>
+      </div>
     </div>
   </div>
 </template>
@@ -159,10 +166,11 @@ export default {
   background: rgba(231, 76, 60, 0.1);
 }
 
-.entry-photo {
+.entry-photos {
   margin-bottom: 1.5rem;
-  border-radius: 10px;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
 }
 
 .photo-img {
@@ -170,6 +178,7 @@ export default {
   height: auto;
   max-height: 400px;
   object-fit: cover;
+  border-radius: 10px;
   display: block;
 }
 

@@ -37,24 +37,27 @@
         </div>
 
         <div class="form-group">
-          <label for="photo">📸 Add a Photo</label>
+          <label for="photo">📸 Add Photos (up to 10)</label>
           <div class="photo-input-wrapper">
             <input 
               id="photo"
               type="file"
               accept="image/*"
+              multiple
               @change="handlePhotoUpload"
               class="photo-input"
             >
             <label for="photo" class="photo-label">
-              <span v-if="!form.photo">Choose Photo</span>
-              <span v-else>✓ Photo Added</span>
+              <span v-if="form.photos.length === 0">Choose Photos</span>
+              <span v-else>✓ {{ form.photos.length }} Photo<span v-if="form.photos.length > 1">s</span> Added</span>
             </label>
           </div>
           <p v-if="photoError" class="error-message">{{ photoError }}</p>
-          <div v-if="form.photo" class="photo-preview">
-            <img :src="form.photo" alt="Preview" class="preview-img">
-            <button type="button" @click="removePhoto" class="remove-photo-btn">Remove</button>
+          <div v-if="form.photos.length > 0" class="photos-grid">
+            <div v-for="(photo, idx) in form.photos" :key="idx" class="photo-preview">
+              <img :src="photo" :alt="`Photo ${idx + 1}`" class="preview-img">
+              <button type="button" @click="removePhoto(idx)" class="remove-photo-btn">✕</button>
+            </div>
           </div>
         </div>
 
@@ -117,7 +120,7 @@ export default {
         title: '',
         content: '',
         mood: '❤️',
-        photo: null,
+        photos: [],
         date: this.getCurrentDateTime()
       },
       moods: ['❤️', '😊', '😍', '🥰', '😌', '🎉', '✨', '🌙'],
@@ -126,16 +129,36 @@ export default {
     }
   },
   watch: {
-    editingEntry(newVal) {
-      if (newVal) {
-        this.form = {
-          title: newVal.title,
-          content: newVal.content,
-          mood: newVal.mood,
-          photo: newVal.photo || null,
-          date: this.formatDateToInput(newVal.date)
+    editingEntry: {
+      handler(newVal) {
+        if (newVal) {
+          // Update form fields individually to ensure proper Vue binding
+          this.form.title = newVal.title || ''
+          this.form.content = newVal.content || ''
+          this.form.mood = newVal.mood || '❤️'
+          this.form.photos = newVal.photos && newVal.photos.length > 0 ? [...newVal.photos] : []
+          this.form.date = this.formatDateToInput(newVal.date)
+        } else {
+          // Clear form when not editing
+          this.resetForm()
         }
-      }
+      },
+      immediate: true,
+      deep: true
+    }
+  },
+  mounted() {
+    // Ensure form is populated if editingEntry is set when component mounts
+    if (this.editingEntry) {
+      this.form.title = this.editingEntry.title || ''
+      this.form.content = this.editingEntry.content || ''
+      this.form.mood = this.editingEntry.mood || '❤️'
+      this.form.photos = this.editingEntry.photos && this.editingEntry.photos.length > 0 ? [...this.editingEntry.photos] : []
+      this.form.date = this.formatDateToInput(this.editingEntry.date)
+    }
+    // Ensure we have a valid date if not editing
+    if (!this.form.date) {
+      this.form.date = this.getCurrentDateTime()
     }
   },
   methods: {
@@ -150,85 +173,95 @@ export default {
       return date.toISOString().slice(0, 16)
     },
     handlePhotoUpload(event) {
-      const file = event.target.files[0]
+      const files = event.target.files
       this.photoError = null
       
-      if (!file) return
+      if (!files || files.length === 0) return
       
-      // Check file size
-      if (file.size > this.maxFileSize) {
-        this.photoError = `File is too large! Max size is 2MB. Your file is ${(file.size / 1024 / 1024).toFixed(1)}MB.`
+      // Check total number of photos
+      if (this.form.photos.length + files.length > 10) {
+        this.photoError = `You can only upload up to 10 photos total. You already have ${this.form.photos.length}.`
         event.target.value = ''
         return
       }
       
-      // Check file type
-      if (!file.type.startsWith('image/')) {
-        this.photoError = 'Please select an image file'
-        event.target.value = ''
-        return
-      }
+      let processedCount = 0
       
-      const reader = new FileReader()
-      
-      reader.onerror = () => {
-        this.photoError = 'Failed to read the image file'
-        event.target.value = ''
-      }
-      
-      reader.onload = (e) => {
-        try {
-          // Compress the image
-          const img = new Image()
-          img.onload = () => {
-            const canvas = document.createElement('canvas')
-            let width = img.width
-            let height = img.height
-            
-            // Resize if image is too large
-            const maxWidth = 1200
-            const maxHeight = 1200
-            
-            if (width > height) {
-              if (width > maxWidth) {
-                height *= maxWidth / width
-                width = maxWidth
+      Array.from(files).forEach((file) => {
+        // Check file size
+        if (file.size > this.maxFileSize) {
+          this.photoError = `File "${file.name}" is too large! Max size is 2MB.`
+          return
+        }
+        
+        // Check file type
+        if (!file.type.startsWith('image/')) {
+          this.photoError = `File "${file.name}" is not an image.`
+          return
+        }
+        
+        const reader = new FileReader()
+        
+        reader.onerror = () => {
+          this.photoError = `Failed to read file "${file.name}"`
+        }
+        
+        reader.onload = (e) => {
+          try {
+            const img = new Image()
+            img.onload = () => {
+              const canvas = document.createElement('canvas')
+              let width = img.width
+              let height = img.height
+              
+              // Resize if image is too large
+              const maxWidth = 1200
+              const maxHeight = 1200
+              
+              if (width > height) {
+                if (width > maxWidth) {
+                  height *= maxWidth / width
+                  width = maxWidth
+                }
+              } else {
+                if (height > maxHeight) {
+                  width *= maxHeight / height
+                  height = maxHeight
+                }
               }
-            } else {
-              if (height > maxHeight) {
-                width *= maxHeight / height
-                height = maxHeight
+              
+              canvas.width = width
+              canvas.height = height
+              
+              const ctx = canvas.getContext('2d')
+              ctx.drawImage(img, 0, 0, width, height)
+              
+              // Compress to JPEG
+              const compressedPhoto = canvas.toDataURL('image/jpeg', 0.8)
+              this.form.photos.push(compressedPhoto)
+              
+              processedCount++
+              if (processedCount === Array.from(files).length) {
+                this.photoError = null
+                event.target.value = ''
               }
             }
             
-            canvas.width = width
-            canvas.height = height
+            img.onerror = () => {
+              this.photoError = `Failed to load image "${file.name}"`
+            }
             
-            const ctx = canvas.getContext('2d')
-            ctx.drawImage(img, 0, 0, width, height)
-            
-            // Compress to JPEG
-            this.form.photo = canvas.toDataURL('image/jpeg', 0.8)
-            this.photoError = null
+            img.src = e.target.result
+          } catch (error) {
+            this.photoError = 'Error processing image'
           }
-          
-          img.onerror = () => {
-            this.photoError = 'Failed to load the image'
-            event.target.value = ''
-          }
-          
-          img.src = e.target.result
-        } catch (error) {
-          this.photoError = 'Error processing image'
-          event.target.value = ''
         }
-      }
-      
-      reader.readAsDataURL(file)
+        
+        reader.readAsDataURL(file)
+      })
     },
-    removePhoto() {
-      this.form.photo = null
-      this.$refs.photoInput = null
+    removePhoto(index) {
+      this.form.photos.splice(index, 1)
     },
     submitForm() {
       if (this.form.title && this.form.content) {
@@ -237,7 +270,7 @@ export default {
           title: this.form.title,
           content: this.form.content,
           mood: this.form.mood,
-          photo: this.form.photo,
+          photos: this.form.photos,
           date: new Date(this.form.date).toISOString()
         }
         
@@ -261,7 +294,7 @@ export default {
         title: '',
         content: '',
         mood: '❤️',
-        photo: null,
+        photos: [],
         date: this.getCurrentDateTime()
       }
     }
@@ -378,17 +411,24 @@ textarea {
   border-left: 3px solid #e74c3c;
 }
 
-.photo-preview {
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
   margin-top: 1rem;
+}
+
+.photo-preview {
   position: relative;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .preview-img {
   width: 100%;
-  max-height: 300px;
+  height: 150px;
   object-fit: cover;
-  border-radius: 8px;
-  border: 2px solid #e0e0e0;
+  display: block;
 }
 
 .remove-photo-btn {
@@ -397,17 +437,22 @@ textarea {
   right: 0.5rem;
   background: white;
   border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 5px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 0.9rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  font-size: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .remove-photo-btn:hover {
   background: #f5f5f5;
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .mood-selector {
