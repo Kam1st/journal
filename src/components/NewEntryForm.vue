@@ -210,41 +210,44 @@ export default {
           try {
             const img = new Image()
             img.onload = () => {
-              const canvas = document.createElement('canvas')
-              let width = img.width
-              let height = img.height
-              
-              // Resize if image is too large
-              const maxWidth = 1200
-              const maxHeight = 1200
-              
-              if (width > height) {
-                if (width > maxWidth) {
-                  height *= maxWidth / width
-                  width = maxWidth
+              // Use setTimeout to prevent UI freeze during compression
+              setTimeout(() => {
+                const canvas = document.createElement('canvas')
+                let width = img.width
+                let height = img.height
+                
+                // Resize if image is too large (reduced from 1200 to 800 for faster processing)
+                const maxWidth = 800
+                const maxHeight = 800
+                
+                if (width > height) {
+                  if (width > maxWidth) {
+                    height *= maxWidth / width
+                    width = maxWidth
+                  }
+                } else {
+                  if (height > maxHeight) {
+                    width *= maxHeight / height
+                    height = maxHeight
+                  }
                 }
-              } else {
-                if (height > maxHeight) {
-                  width *= maxHeight / height
-                  height = maxHeight
+                
+                canvas.width = width
+                canvas.height = height
+                
+                const ctx = canvas.getContext('2d')
+                ctx.drawImage(img, 0, 0, width, height)
+                
+                // Compress to JPEG (quality 0.6 for smaller files)
+                const compressedPhoto = canvas.toDataURL('image/jpeg', 0.6)
+                this.form.photos.push(compressedPhoto)
+                
+                processedCount++
+                if (processedCount === Array.from(files).length) {
+                  this.photoError = null
+                  event.target.value = ''
                 }
-              }
-              
-              canvas.width = width
-              canvas.height = height
-              
-              const ctx = canvas.getContext('2d')
-              ctx.drawImage(img, 0, 0, width, height)
-              
-              // Compress to JPEG
-              const compressedPhoto = canvas.toDataURL('image/jpeg', 0.8)
-              this.form.photos.push(compressedPhoto)
-              
-              processedCount++
-              if (processedCount === Array.from(files).length) {
-                this.photoError = null
-                event.target.value = ''
-              }
+              }, 0)
             }
             
             img.onerror = () => {

@@ -2,23 +2,44 @@
   <div class="login-container">
     <div class="login-card">
       <h1 class="title">💕 our new journal</h1>
-      <p class="subtitle">who's making the entry rn?</p>
 
-      <div class="button-group">
-        <button 
-          class="login-btn kamilah-btn"
-          @click="selectUser('Kamilah')"
-        >
-          <span class="emoji">🦦</span>
-          <span class="name">Kam</span>
-        </button>
-        <button 
-          class="login-btn jeremy-btn"
-          @click="selectUser('Jeremy')"
-        >
-          <span class="emoji">🐧</span>
-          <span class="name">Jay</span>
-        </button>
+      <!-- Firebase login form -->
+      <div v-if="!loggedIn">
+        <p class="subtitle">enter your credentials (now it's secure lmao)</p>
+        <input 
+          v-model="email" 
+          type="email" 
+          placeholder="Email" 
+          class="login-input"
+        />
+        <input 
+          v-model="password" 
+          type="password" 
+          placeholder="Password" 
+          class="login-input"
+        />
+        <button class="login-btn" @click="loginUser">Login</button>
+      </div>
+
+      <!-- Kam/Jay selection buttons -->
+      <div v-else>
+        <p class="subtitle">Who's making the entry rn?</p>
+        <div class="button-group">
+          <button 
+            class="login-btn kamilah-btn"
+            @click="selectUser('Kamilah')"
+          >
+            <span class="emoji">🦦</span>
+            <span class="name">Kam</span>
+          </button>
+          <button 
+            class="login-btn jeremy-btn"
+            @click="selectUser('Jeremy')"
+          >
+            <span class="emoji">🐧</span>
+            <span class="name">Jay</span>
+          </button>
+        </div>
       </div>
 
     </div>
@@ -26,12 +47,32 @@
 </template>
 
 <script>
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 export default {
   name: 'LoginPage',
   emits: ['login'],
+  data() {
+    return {
+      email: '',
+      password: '',
+      loggedIn: false
+    }
+  },
   methods: {
+    loginUser() {
+      const auth = getAuth();
+      signInWithEmailAndPassword(auth, this.email, this.password)
+        .then(userCredential => {
+          this.loggedIn = true;
+          console.log('Logged in user email:', userCredential.user.email);
+        })
+        .catch(error => {
+          alert(error.message);
+        });
+    },
     selectUser(username) {
-      this.$emit('login', username)
+      this.$emit('login', username);
     }
   }
 }
@@ -44,12 +85,12 @@ export default {
   justify-content: center;
   min-height: 100vh;
   background: #FF5EE2;
-  padding: 2rem;
+  padding: 3rem;
 }
 
 .login-card {
   background: white;
-  border-radius: 20px;
+  border-radius: 30px;
   padding: 3rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   text-align: center;
@@ -69,6 +110,18 @@ export default {
   margin-bottom: 3rem;
 }
 
+.login-input {
+  padding: 1rem;
+  width: 80%;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  border: 1px solid #fc8ced;
+  font-size: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .button-group {
   display: flex;
   gap: 2rem;
@@ -77,7 +130,8 @@ export default {
 }
 
 .login-btn {
-  padding: 2rem;
+  padding: 20px;
+  align: center;
   border: none;
   border-radius: 15px;
   cursor: pointer;
@@ -89,10 +143,11 @@ export default {
   align-items: center;
   gap: 1rem;
   color: white;
+  background-color: #fc8ced
 }
 
 .emoji {
-  font-size: 3rem;
+  font-size: 2rem;
 }
 
 .name {
@@ -116,12 +171,6 @@ export default {
 .jeremy-btn:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 35px rgba(79, 172, 254, 0.4);
-}
-
-.hint {
-  color: #999;
-  font-size: 0.95rem;
-  margin: 0;
 }
 
 @media (max-width: 600px) {
@@ -152,6 +201,10 @@ export default {
 
   .name {
     font-size: 1.1rem;
+  }
+
+  .login-input {
+    width: 100%;
   }
 }
 </style>
