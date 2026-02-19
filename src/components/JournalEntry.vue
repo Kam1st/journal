@@ -32,7 +32,7 @@
     <div class="entry-footer">
       <div class="last-updated" v-if="entry.lastUpdatedAt || entry.lastUpdatedBy">
         <small>
-          Last updated: <strong>{{ entry.lastUpdatedAt ? formatDate(entry.lastUpdatedAt) : '—' }}</strong>
+          last update: <strong>{{ entry.lastUpdatedAt ? formatDate(entry.lastUpdatedAt) : '—' }}</strong>
           <span v-if="entry.lastUpdatedBy"> by {{ entry.lastUpdatedBy }}</span>
         </small>
       </div>
@@ -71,7 +71,7 @@ export default {
       return Math.max(1, minutes)
     },
     deleteEntry() {
-      if (confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
+      if (confirm('heyyyyy are you sure you wanna delete? cannot undo it after boo.')) {
         this.$emit('delete-entry', this.entry.id)
       }
     }

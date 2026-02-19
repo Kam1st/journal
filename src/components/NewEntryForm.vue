@@ -1,11 +1,11 @@
 <template>
   <div class="form-container">
     <div class="form-card">
-      <h2>{{ editingEntry ? 'Edit Memory' : 'Create a New Memory' }}</h2>
+      <h2>{{ editingEntry ? 'edit memory' : 'create new memory' }}</h2>
       
       <form @submit.prevent="submitForm">
         <div class="form-group">
-          <label for="author">Author</label>
+          <label for="author">author</label>
           <input 
             id="author"
             type="text" 
@@ -16,7 +16,7 @@
         </div>
 
         <div class="form-group">
-          <label for="date">Date & Time</label>
+          <label for="date">date & time</label>
           <input 
             v-model="form.date"
             id="date"
@@ -26,18 +26,18 @@
         </div>
 
         <div class="form-group">
-          <label for="title">Title</label>
+          <label for="title">name</label>
           <input 
             v-model="form.title" 
             id="title"
             type="text" 
-            placeholder="Give this moment a title..."
+            placeholder=""
             required
           >
         </div>
 
         <div class="form-group">
-          <label for="photo">📸 Add Photos (up to 10)</label>
+          <label for="photo">📸 pics (up to 10)</label>
           <div class="photo-input-wrapper">
             <input 
               id="photo"
@@ -62,7 +62,7 @@
         </div>
 
         <div class="form-group">
-          <label for="mood">How are you feeling?</label>
+          <label for="mood">how did it make you feel?</label>
           <div class="mood-selector">
             <button 
               v-for="emoji in moods" 
@@ -77,19 +77,19 @@
         </div>
 
         <div class="form-group">
-          <label for="content">Your Story</label>
+          <label for="content">the story</label>
           <textarea 
             v-model="form.content"
             id="content"
             rows="10"
-            placeholder="Write about this special moment together..."
+            placeholder="write a lil summary"
             required
           ></textarea>
         </div>
 
         <div class="button-group">
           <button type="submit" class="submit-btn">
-            {{ editingEntry ? 'Update Memory' : 'Save Memory' }}
+            {{ editingEntry ? 'Update Memory' : 'save' }}
           </button>
           <button v-if="editingEntry" type="button" class="cancel-btn" @click="cancelEdit">
             Cancel

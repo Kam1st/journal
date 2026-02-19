@@ -1,7 +1,7 @@
 <template>
   <div class="timeline-container">
     <div v-if="entries.length === 0" class="empty-state">
-      <p>📝 Start your journey! Create your first memory together.</p>
+      <p>📝 try it out! </p>
     </div>
 
     <div v-else class="timeline">

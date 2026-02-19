@@ -10,14 +10,14 @@
           @click="selectUser('Kamilah')"
         >
           <span class="emoji">🦦</span>
-          <span class="name">Kamilah</span>
+          <span class="name">Kam</span>
         </button>
         <button 
           class="login-btn jeremy-btn"
           @click="selectUser('Jeremy')"
         >
           <span class="emoji">🐧</span>
-          <span class="name">Jeremy</span>
+          <span class="name">Jay</span>
         </button>
       </div>
 

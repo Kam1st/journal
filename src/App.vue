@@ -11,23 +11,23 @@
               :class="['nav-btn', { active: currentView === 'timeline' }]"
               @click="currentView = 'timeline'"
             >
-              Timeline
+              timeline
             </button>
             <button 
               :class="['nav-btn', { active: currentView === 'new' }]"
               @click="currentView = 'new'"
             >
-              New Entry
+              new entry
             </button>
             <button class="nav-btn logout-btn" @click="handleLogout">
-              Logout
+              logout
             </button>
           </div>
         </div>
       </nav>
 
       <div class="user-info">
-        <span>👤 Logged in as: <strong>{{ currentUser }}</strong></span>
+        <span>👤 editing as: <strong>{{ currentUser }}</strong></span>
       </div>
 
       <div class="main-content">
