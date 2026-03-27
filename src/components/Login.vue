@@ -84,12 +84,12 @@ export default {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #FF5EE2;
+  background: var(--body-bg);
   padding: 3rem;
 }
 
 .login-card {
-  background: white;
+  background: var(--surface);
   border-radius: 30px;
   padding: 3rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -100,12 +100,12 @@ export default {
 
 .title {
   font-size: 2.5rem;
-  color: black;
+  color: var(--text);
   margin: 0 0 1rem 0;
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   font-size: 1.2rem;
   margin-bottom: 3rem;
 }
@@ -115,7 +115,9 @@ export default {
   width: 80%;
   margin-bottom: 1rem;
   border-radius: 10px;
-  border: 1px solid #fc8ced;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--input-color);
   font-size: 1rem;
   display: block;
   margin-left: auto;
@@ -143,7 +145,7 @@ export default {
   align-items: center;
   gap: 1rem;
   color: white;
-  background-color: #fc8ced
+  background-color: var(--accent);
 }
 
 .emoji {

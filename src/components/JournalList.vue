@@ -43,12 +43,12 @@ export default {
 }
 
 .empty-state {
-  background: white;
+  background: var(--surface);
   border-radius: 15px;
   padding: 3rem 2rem;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  color: #999;
+  box-shadow: var(--shadow);
+  color: var(--text-muted);
   font-size: 1.2rem;
   margin: 2rem 0;
 }

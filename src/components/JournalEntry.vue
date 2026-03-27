@@ -81,12 +81,12 @@ export default {
 
 <style scoped>
 .entry-card {
-  background: white;
+  background: var(--surface);
   border-radius: 15px;
   padding: 2rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-left: 5px solid #667eea;
+  border-left: 5px solid #AA336A	;
   overflow: hidden;
 }
 
@@ -109,21 +109,21 @@ export default {
 
 .entry-meta h3 {
   margin: 0;
-  color: #333;
+  color: var(--text);
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
 
 .author {
   margin: 0;
-  color: #667eea;
+  color: var(--accent);
   font-weight: 600;
   font-size: 0.95rem;
 }
 
 .date {
   margin: 0.3rem 0 0 0;
-  color: #999;
+  color: var(--text-muted);
   font-size: 0.85rem;
 }
 
@@ -185,7 +185,7 @@ export default {
 .entry-content {
   margin-bottom: 1.5rem;
   line-height: 1.8;
-  color: #555;
+  color: var(--text-muted);
 }
 
 .entry-content p {
@@ -197,7 +197,7 @@ export default {
 .entry-footer {
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--border);
   padding-top: 1rem;
 }
 

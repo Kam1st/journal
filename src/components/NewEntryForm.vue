@@ -313,17 +313,17 @@ export default {
 }
 
 .form-card {
-  background: white;
+  background: var(--surface);
   border-radius: 15px;
   padding: 2.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow);
   width: 100%;
   max-width: 600px;
 }
 
 .form-card h2 {
   margin-bottom: 2rem;
-  color: #667eea;
+  color: var(--accent);
   font-size: 1.8rem;
 }
 
@@ -335,7 +335,7 @@ label {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text);
 }
 
 input[type="text"],
@@ -343,11 +343,13 @@ input[type="datetime-local"],
 textarea {
   width: 100%;
   padding: 0.8rem;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--input-border);
   border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--input-color);
   font-family: inherit;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 input[type="text"]:focus,
@@ -359,8 +361,8 @@ textarea:focus {
 }
 
 .disabled-input {
-  background: #f5f5f5;
-  color: #667eea;
+  background: var(--surface-2);
+  color: var(--accent);
   font-weight: 600;
   cursor: not-allowed;
 }
@@ -388,30 +390,30 @@ textarea {
 .photo-label {
   display: block;
   padding: 0.8rem;
-  background: #f5f5f5;
-  border: 2px dashed #667eea;
+  background: var(--surface-2);
+  border: 2px dashed var(--accent);
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-  color: #667eea;
+  color: var(--accent);
 }
 
 .photo-label:hover {
-  background: #eeeeee;
-  border-color: #764ba2;
+  background: var(--surface);
+  border-color: var(--accent);
 }
 
 .error-message {
-  color: #e74c3c;
+  color: var(--danger);
   font-size: 0.85rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem;
-  background: #fadbd8;
+  background: rgba(236, 108, 108, 0.15);
   border-radius: 5px;
-  border-left: 3px solid #e74c3c;
+  border-left: 3px solid var(--danger);
 }
 
 .photos-grid {
@@ -465,7 +467,7 @@ textarea {
 }
 
 .mood-btn {
-  background: #f5f5f5;
+  background: var(--surface-2);
   border: 2px solid transparent;
   border-radius: 50%;
   width: 50px;
@@ -479,14 +481,14 @@ textarea {
 }
 
 .mood-btn:hover {
-  background: #e8e8e8;
+  background: var(--surface);
   transform: scale(1.1);
 }
 
 .mood-btn.selected {
-  border-color: #667eea;
-  background: #667eea;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 4px 12px var(--accent-soft);
 }
 
 .button-group {
@@ -498,7 +500,7 @@ textarea {
 .submit-btn {
   flex: 1;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, #8f6bff 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -520,9 +522,9 @@ textarea {
 .cancel-btn {
   flex: 1;
   padding: 1rem;
-  background: white;
-  color: #666;
-  border: 2px solid #ddd;
+  background: var(--surface-2);
+  color: var(--text-muted);
+  border: 2px solid var(--border);
   border-radius: 8px;
   font-size: 1.1rem;
   font-weight: 600;
