@@ -16,12 +16,7 @@
             >
               timeline
             </button>
-            <button 
-              :class="['nav-btn', { active: currentView === 'new' }]"
-              @click="currentView = 'new'"
-            >
-              new entry
-            </button>
+            <!-- new entry button is moved to entries section for better placement -->
             <button class="nav-btn logout-btn" @click="handleLogout">
               logout
             </button>
@@ -34,6 +29,16 @@
       </div>
 
       <div class="main-content">
+        <div class="add-entry-container" v-if="currentView === 'timeline'">
+          <button
+            class="add-entry-btn"
+            @click="currentView = 'new'"
+            aria-label="Create new entry"
+            title="Create new entry"
+          >
+            ➕
+          </button>
+        </div>
         <NewEntryForm 
           v-if="currentView === 'new'"
           :author="currentUser"
@@ -428,6 +433,32 @@ body.dark-mode {
   margin: 2rem auto;
   padding: 0 2rem;
   background: var(--app-bg);
+}
+
+.add-entry-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.add-entry-btn {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--btn-border);
+  background: var(--surface);
+  color: var(--btn-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.add-entry-btn:hover {
+  transform: scale(1.08);
+  background: var(--accent-soft);
 }
 
 @media (max-width: 600px) {
